@@ -25,11 +25,21 @@ if (!JWT_SECRET || JWT_SECRET.length < 32) {
 }
 
 // --- MIDTRANS CONFIG ---
-const snap = new midtransClient.Snap({
-  isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
-  serverKey: process.env.MIDTRANS_SERVER_KEY,
-  clientKey: process.env.MIDTRANS_CLIENT_KEY
-});
+let snap;
+try {
+  if (process.env.MIDTRANS_SERVER_KEY && process.env.MIDTRANS_CLIENT_KEY) {
+    snap = new midtransClient.Snap({
+      isProduction: process.env.MIDTRANS_IS_PRODUCTION === 'true',
+      serverKey: process.env.MIDTRANS_SERVER_KEY,
+      clientKey: process.env.MIDTRANS_CLIENT_KEY
+    });
+    console.log('✅ Midtrans initialized');
+  } else {
+    console.warn('⚠️  Midtrans credentials not found, payment features disabled');
+  }
+} catch (error) {
+  console.error('❌ Midtrans initialization failed:', error.message);
+}
 
 // --- SECURITY MIDDLEWARE ---
 app.use(helmet({
@@ -94,16 +104,25 @@ let pool;
 
 function getPool() {
   if (!pool) {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      },
-      // Serverless-friendly connection settings
-      max: 1, // Minimize connections for serverless
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000,
-    });
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL environment variable is not set');
+    }
+    try {
+      pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false
+        },
+        // Serverless-friendly connection settings
+        max: 1, // Minimize connections for serverless
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000,
+      });
+      console.log('✅ Database pool initialized');
+    } catch (error) {
+      console.error('❌ Database pool initialization failed:', error.message);
+      throw error;
+    }
   }
   return pool;
 }
@@ -571,7 +590,7 @@ app.post('/api/events/:eventId/register', authenticateToken, async (req, res) =>
     const pendaftaranBaru = insertResult.rows[0];
 
     let paymentToken = null;
-    if (tiketData.harga > 0) {
+    if (tiketData.harga > 0 && snap) {
       const userQuery = `SELECT email, nama_lengkap FROM "User" WHERE id = $1`;
       const userResult = await getPool().query(userQuery, [userId]);
       const userData = userResult.rows[0];
@@ -598,6 +617,8 @@ app.post('/api/events/:eventId/register', authenticateToken, async (req, res) =>
 
       const transaction = await snap.createTransaction(parameter);
       paymentToken = transaction.token;
+    } else if (tiketData.harga > 0 && !snap) {
+      console.warn('[PAYMENT] Midtrans not configured, payment token not generated');
     }
 
     console.log(`[SUCCESS] User ${userId} berhasil mendaftar ke event ${eventId}`);
@@ -771,6 +792,11 @@ app.post('/api/payment/notification', async (req, res) => {
   console.log('[MIDTRANS] Menerima notifikasi:', req.body);
   
   try {
+    if (!snap) {
+      console.error('[MIDTRANS] Snap not initialized');
+      return res.status(503).json({ message: 'Payment service not available' });
+    }
+    
     const notification = req.body;
     
     const statusResponse = await snap.transaction.notification(notification);
@@ -819,12 +845,47 @@ app.get('/api/payment/status/:orderId', authenticateToken, async (req, res) => {
   const { orderId } = req.params;
   
   try {
+    if (!snap) {
+      return res.status(503).json({ message: 'Payment service not available' });
+    }
     const statusResponse = await snap.transaction.status(orderId);
     res.status(200).json(statusResponse);
   } catch (error) {
     console.error('[MIDTRANS] Error checking status:', error);
     res.status(500).json({ message: 'Error checking payment status' });
   }
+});
+
+// ======================
+// HEALTH CHECK & ERROR HANDLERS
+// ======================
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    services: {
+      database: !!process.env.DATABASE_URL,
+      jwt: !!process.env.JWT_SECRET,
+      midtrans: !!snap
+    }
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Endpoint tidak ditemukan' });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('[ERROR]', err.stack);
+  res.status(err.status || 500).json({ 
+    message: err.message || 'Internal server error',
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+  });
 });
 
 // Export handler for Vercel serverless
