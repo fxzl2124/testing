@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { tokenStorage } from '../services/api';
+import { tokenStorage, getApiUrl } from '../services/api';
 
 interface AddTicketModalProps {
   isOpen: boolean;

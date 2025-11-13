@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { tokenStorage } from '../services/api';
+import { tokenStorage, getApiUrl } from '../services/api';
 import AddTicketModal from './AddTicketModal';
 
 interface MyEvent {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { tokenStorage } from '../services/api';
+import { tokenStorage, getApiUrl } from '../services/api';
 
 interface Registration {
   registrasi_id: number;
