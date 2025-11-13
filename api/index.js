@@ -203,9 +203,10 @@ app.post('/api/auth/register',
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log('[REGISTER VALIDATION ERROR]', errors.array());
         return res.status(400).json({ 
           message: 'Validasi gagal', 
-          errors: errors.array().map(e => e.msg) 
+          errors: errors.array().map(e => `${e.path}: ${e.msg}`)
         });
       }
 
