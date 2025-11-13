@@ -889,5 +889,11 @@ app.use((err, req, res, next) => {
 });
 
 // Export handler for Vercel serverless
-module.exports = app;
-module.exports.default = app;
+// Vercel expects a request handler function
+module.exports = (req, res) => {
+  // Let Express handle the request
+  return app(req, res);
+};
+
+// Also export as default
+module.exports.default = module.exports;
