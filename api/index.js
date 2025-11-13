@@ -14,6 +14,13 @@ const { body, validationResult } = require('express-validator');
 // Initialize Express app
 const app = express();
 
+// Log environment check
+console.log('🚀 API Handler initialized');
+console.log('📝 Environment variables check:');
+console.log('  - DATABASE_URL:', !!process.env.DATABASE_URL ? '✅ Set' : '❌ Not set');
+console.log('  - JWT_SECRET:', !!process.env.JWT_SECRET ? '✅ Set' : '❌ Not set');
+console.log('  - MIDTRANS_SERVER_KEY:', !!process.env.MIDTRANS_SERVER_KEY ? '✅ Set' : '❌ Not set');
+
 // --- 🔐 JWT SECRETS FROM ENV ---
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
@@ -47,36 +54,16 @@ app.use(helmet({
   crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
 }));
 
-// CORS Configuration - Allow all Vercel domains
-const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5174',
-  'http://localhost:5173',
-  'http://localhost:5175',
-  /\.vercel\.app$/ // Allow all Vercel preview URLs
-];
+// CORS Configuration - Allow all origins for now (for debugging)
+console.log('🔐 CORS: Allowing all origins for debugging');
 
 app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, same-origin)
-    if (!origin) return callback(null, true);
-    
-    const isAllowed = allowedOrigins.some(allowed => {
-      if (typeof allowed === 'string') return allowed === origin;
-      if (allowed instanceof RegExp) return allowed.test(origin);
-      return false;
-    });
-    
-    if (isAllowed) {
-      return callback(null, true);
-    }
-    
-    // Log rejected origin for debugging
-    console.log('[CORS] Rejected origin:', origin);
-    return callback(new Error('CORS policy: Origin tidak diizinkan'), false);
-  },
+  origin: true, // Allow all origins temporarily for debugging
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'X-JSON'],
+  maxAge: 86400
 }));
 
 // Rate Limiting
@@ -98,6 +85,12 @@ const authLimiter = rateLimit({
 
 app.use(generalLimiter);
 app.use(express.json({ limit: '10mb' }));
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.path} - Origin: ${req.headers.origin || 'none'}`);
+  next();
+});
 
 // --- DATABASE CONNECTION (Optimized for Serverless) ---
 let pool;

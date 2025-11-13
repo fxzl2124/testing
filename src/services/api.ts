@@ -2,10 +2,11 @@
 
 import type { Event, AuthResponse, RegisterData, LoginData } from '../types';
 
-// API Base URL - prioritas: env variable > production relative path > localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL 
-  || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+// API Base URL - detect based on hostname
+const isProduction = window.location.hostname.includes('vercel.app');
+const API_BASE_URL = isProduction ? '/api' : 'http://localhost:5000/api';
 
+console.log('🔗 Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
 console.log('🔗 API Base URL:', API_BASE_URL);
 
 // 🔐 Helper function untuk handle response dengan token refresh
