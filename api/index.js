@@ -32,9 +32,12 @@ const snap = new midtransClient.Snap({
 });
 
 // --- SECURITY MIDDLEWARE ---
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
-// CORS Configuration
+// CORS Configuration - Allow all Vercel domains
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5174',
   'http://localhost:5173',
@@ -44,6 +47,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, same-origin)
     if (!origin) return callback(null, true);
     
     const isAllowed = allowedOrigins.some(allowed => {
@@ -55,9 +59,14 @@ app.use(cors({
     if (isAllowed) {
       return callback(null, true);
     }
+    
+    // Log rejected origin for debugging
+    console.log('[CORS] Rejected origin:', origin);
     return callback(new Error('CORS policy: Origin tidak diizinkan'), false);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate Limiting

@@ -2,10 +2,11 @@
 
 import type { Event, AuthResponse, RegisterData, LoginData } from '../types';
 
-// Auto-detect environment: use relative path for Vercel, localhost for development
-const API_BASE_URL = import.meta.env.PROD 
-  ? '/api'  // Production: use Vercel serverless functions
-  : 'http://localhost:5000/api';  // Development: use local backend
+// API Base URL - prioritas: env variable > production relative path > localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL 
+  || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+
+console.log('🔗 API Base URL:', API_BASE_URL);
 
 // 🔐 Helper function untuk handle response dengan token refresh
 async function handleResponse<T>(response: Response, retryWithRefresh = true): Promise<T> {
