@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CalendarDaysIcon, MapPinIcon, TicketIcon } from '@heroicons/react/24/outline';
 import { tokenStorage, getApiUrl } from '../services/api';
 import AddTicketModal from './AddTicketModal';
 
@@ -178,9 +179,15 @@ const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({ isOpen, o
                                   : 'border-gray-300 hover:border-blue-400'
                               }`}
                             >
-                              <h4 className="font-semibold text-gray-900">{event.nama_event}</h4>
-                              <p className="text-sm text-gray-600">📅 {formatDate(event.tanggal_mulai)}</p>
-                              <p className="text-sm text-gray-600">📍 {event.lokasi}</p>
+                              <h4 className="font-semibold text-gray-900 mb-2">{event.nama_event}</h4>
+                              <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                                <CalendarDaysIcon className="w-4 h-4 text-blue-600" />
+                                <span>{formatDate(event.tanggal_mulai)}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-gray-600">
+                                <MapPinIcon className="w-4 h-4 text-red-600" />
+                                <span>{event.lokasi}</span>
+                              </div>
                             </button>
                             <button
                               onClick={() => {
@@ -189,9 +196,7 @@ const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({ isOpen, o
                               }}
                               className="w-full bg-green-600 text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                             >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                              </svg>
+                              <TicketIcon className="w-5 h-5" />
                               Tambah Tiket
                             </button>
                           </div>

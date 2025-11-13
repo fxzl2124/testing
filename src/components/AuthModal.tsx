@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { authAPI, tokenStorage, userStorage } from '../services/api';
 import type { User } from '../types';
+import Alert from './Alert';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -84,9 +85,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onAuthSucc
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
-            {error}
-          </div>
+          <Alert 
+            type="error" 
+            message={error} 
+            onClose={() => setError(null)}
+          />
         )}
 
         {/* Form */}

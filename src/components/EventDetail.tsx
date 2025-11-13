@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Event } from '../types';
 import { getApiUrl } from '../services/api';
+import Alert from './Alert';
 
 interface EventDetailProps {
   eventId: number;
@@ -27,6 +28,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
   const [error, setError] = useState<string | null>(null);
   const [selectedTicket, setSelectedTicket] = useState<number | null>(null);
   const [registering, setRegistering] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [warningMessage, setWarningMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEventDetail = async () => {
@@ -49,12 +52,12 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
 
   const handleRegister = async () => {
     if (!selectedTicket) {
-      alert('Pilih tipe tiket terlebih dahulu');
+      setWarningMessage('Pilih tipe tiket terlebih dahulu');
       return;
     }
 
     if (!isLoggedIn) {
-      alert('Silakan login terlebih dahulu untuk mendaftar');
+      setWarningMessage('Silakan login terlebih dahulu untuk mendaftar');
       return;
     }
 
@@ -79,8 +82,8 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
       
       // Jika tiket gratis, langsung sukses
       if (result.isFree) {
-        alert(`${result.message}\n\nQR Code: ${result.pendaftaran.qr_code_unik}`);
-        onClose();
+        setSuccessMessage(`${result.message} - QR Code: ${result.pendaftaran.qr_code_unik}`);
+        setTimeout(() => onClose(), 3000);
         return;
       }
 
@@ -157,9 +160,15 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
   if (error || !eventDetail) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-        <div className="bg-white rounded-lg p-8 max-w-md">
-          <p className="text-red-600 mb-4">{error || 'Event tidak ditemukan'}</p>
-          <button onClick={onClose} className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300">
+        <div className="bg-white rounded-lg p-8 max-w-md animate-scaleIn">
+          <Alert 
+            type="error" 
+            message={error || 'Event tidak ditemukan'} 
+          />
+          <button 
+            onClick={onClose} 
+            className="w-full mt-4 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+          >
             Tutup
           </button>
         </div>
@@ -199,6 +208,22 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
 
           {/* Event Details */}
           <div className="p-6 md:p-8">
+            {/* Alert Messages */}
+            {successMessage && (
+              <Alert 
+                type="success" 
+                message={successMessage} 
+                onClose={() => setSuccessMessage(null)}
+              />
+            )}
+            {warningMessage && (
+              <Alert 
+                type="warning" 
+                message={warningMessage} 
+                onClose={() => setWarningMessage(null)}
+              />
+            )}
+            
             <h1 className="text-3xl font-bold text-gray-900 mb-4">{event.nama_event}</h1>
             
             <div className="space-y-3 mb-6">

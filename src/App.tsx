@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { 
+  CalendarDaysIcon, 
+  UserCircleIcon, 
+  ArrowRightOnRectangleIcon,
+  AcademicCapIcon,
+  BuildingOfficeIcon,
+  PlusCircleIcon,
+  ClipboardDocumentListIcon,
+  ChartBarIcon
+} from '@heroicons/react/24/outline';
 import AuthModal from './components/AuthModal';
 import EventCard from './components/EventCard';
 import EventDetail from './components/EventDetail';
@@ -120,9 +130,7 @@ const App: React.FC = () => {
                       onClick={() => setIsMyRegistrationsOpen(true)}
                       className="bg-purple-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors flex items-center gap-1.5"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
+                      <ClipboardDocumentListIcon className="w-4 h-4" />
                       <span className="hidden lg:inline">Event Saya</span>
                       <span className="lg:hidden">Event</span>
                     </button>
@@ -132,35 +140,35 @@ const App: React.FC = () => {
                         onClick={() => setIsOrgDashboardOpen(true)}
                         className="bg-purple-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors flex items-center gap-1.5"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
+                        <ChartBarIcon className="w-4 h-4" />
                         Dashboard
                       </button>
                       <button 
                         onClick={() => setIsCreateEventModalOpen(true)}
                         className="bg-green-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center gap-1.5"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+                        <PlusCircleIcon className="w-4 h-4" />
                         <span className="hidden lg:inline">Buat Event</span>
                         <span className="lg:hidden">Buat</span>
                       </button>
                     </>
                   )}
                   
-                  <div className="text-xs border-l border-gray-300 pl-3 hidden lg:block">
-                    <p className="text-gray-600 max-w-[150px] truncate">
-                      <span className="font-medium text-gray-900">{user.nama_lengkap}</span>
-                    </p>
-                    <p className="text-xs text-gray-500">{user.role}</p>
+                  <div className="text-xs border-l border-gray-300 pl-3 hidden lg:flex items-center gap-2">
+                    <UserCircleIcon className="w-5 h-5 text-gray-600" />
+                    <div>
+                      <p className="text-gray-600 max-w-[150px] truncate">
+                        <span className="font-medium text-gray-900">{user.nama_lengkap}</span>
+                      </p>
+                      <p className="text-xs text-gray-500">{user.role}</p>
+                    </div>
                   </div>
                   <button 
                     onClick={handleLogout}
-                    className="bg-red-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+                    className="bg-red-600 text-white py-1.5 px-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors flex items-center gap-1.5"
                   >
-                    Logout
+                    <ArrowRightOnRectangleIcon className="w-4 h-4" />
+                    <span>Logout</span>
                   </button>
                 </>
               ) : (
@@ -191,9 +199,7 @@ const App: React.FC = () => {
                       className="bg-purple-600 text-white p-2 rounded-md hover:bg-purple-700 active:scale-95 transition-all"
                       aria-label="Event Saya"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
+                      <ClipboardDocumentListIcon className="w-5 h-5" strokeWidth={2.5} />
                     </button>
                   ) : (
                     <>
@@ -202,18 +208,14 @@ const App: React.FC = () => {
                         className="bg-purple-600 text-white p-2 rounded-md hover:bg-purple-700 active:scale-95 transition-all"
                         aria-label="Dashboard"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
+                        <ChartBarIcon className="w-5 h-5" strokeWidth={2.5} />
                       </button>
                       <button 
                         onClick={() => setIsCreateEventModalOpen(true)}
                         className="bg-green-600 text-white p-2 rounded-md hover:bg-green-700 active:scale-95 transition-all"
                         aria-label="Buat Event"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
+                        <PlusCircleIcon className="w-5 h-5" strokeWidth={2.5} />
                       </button>
                     </>
                   )}
@@ -222,9 +224,7 @@ const App: React.FC = () => {
                     className="bg-red-600 text-white p-2 rounded-md hover:bg-red-700 active:scale-95 transition-all"
                     aria-label="Logout"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
+                    <ArrowRightOnRectangleIcon className="w-5 h-5" strokeWidth={2.5} />
                   </button>
                 </>
               ) : (
@@ -254,9 +254,7 @@ const App: React.FC = () => {
         {!user ? (
           <div className="text-center py-6 sm:py-12 lg:py-16">
             <div className="max-w-2xl mx-auto">
-              <svg className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto text-blue-600 mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <CalendarDaysIcon className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto text-blue-600 mb-3 sm:mb-4" />
               <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
                 Selamat Datang di EventKampus
               </h2>
@@ -283,12 +281,18 @@ const App: React.FC = () => {
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6 text-left">
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">🎓 Untuk Peserta</h3>
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AcademicCapIcon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900">Untuk Peserta</h3>
+                  </div>
                   <p className="text-sm sm:text-base text-gray-600">Temukan event menarik, daftar dengan mudah, dan kelola tiket Anda.</p>
                 </div>
-                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">🏢 Untuk Organisasi</h3>
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <div className="flex items-center gap-2 mb-2">
+                    <BuildingOfficeIcon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900">Untuk Organisasi</h3>
+                  </div>
                   <p className="text-sm sm:text-base text-gray-600">Buat event, kelola peserta, dan pantau penjualan tiket secara real-time.</p>
                 </div>
               </div>
@@ -301,16 +305,25 @@ const App: React.FC = () => {
             {/* Tampilan Loading */}
             {loading && (
               <div className="text-center py-20">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                <p className="text-xl text-gray-500 mt-4">Memuat event...</p>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600"></div>
+                <p className="text-xl text-gray-500 mt-4 animate-pulse">Memuat event...</p>
               </div>
             )}
 
             {/* Tampilan Error */}
             {error && (
-              <div className="text-center py-20 bg-red-100 text-red-700 p-4 rounded-lg">
-                <p className="text-xl font-semibold">Oops! Terjadi Kesalahan</p>
-                <p>{error}</p>
+              <div className="max-w-md mx-auto text-center py-20">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6 shadow-md">
+                  <div className="flex justify-center mb-4">
+                    <div className="bg-red-100 rounded-full p-3">
+                      <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="text-xl font-semibold text-red-800 mb-2">Oops! Terjadi Kesalahan</p>
+                  <p className="text-red-600">{error}</p>
+                </div>
               </div>
             )}
 
