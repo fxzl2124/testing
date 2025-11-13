@@ -9,6 +9,13 @@ const API_BASE_URL = isProduction ? '/api' : 'http://localhost:5000/api';
 console.log('🔗 Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
 console.log('🔗 API Base URL:', API_BASE_URL);
 
+// Export helper untuk digunakan di komponen lain
+export const getApiUrl = (path: string): string => {
+  // Pastikan path dimulai dengan /
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE_URL}${normalizedPath}`;
+};
+
 // 🔐 Helper function untuk handle response dengan token refresh
 async function handleResponse<T>(response: Response, retryWithRefresh = true): Promise<T> {
   // Check if token expired

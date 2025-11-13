@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { tokenStorage } from '../services/api';
+import { tokenStorage, getApiUrl } from '../services/api';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({ isOpen, onClose, on
         throw new Error('Token tidak ditemukan. Silakan login kembali.');
       }
 
-      const response = await fetch('http://localhost:5000/api/events', {
+      const response = await fetch(getApiUrl('/events'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

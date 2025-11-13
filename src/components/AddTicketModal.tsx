@@ -41,7 +41,7 @@ const AddTicketModal: React.FC<AddTicketModalProps> = ({
 
     try {
       const token = tokenStorage.get();
-      const response = await fetch(`http://localhost:5000/api/events/${eventId}/tickets`, {
+      const response = await fetch(getApiUrl(`/events/${eventId}/tickets`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

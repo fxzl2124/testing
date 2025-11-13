@@ -31,7 +31,7 @@ const MyRegistrations: React.FC<MyRegistrationsProps> = ({ isOpen, onClose }) =>
       try {
         setLoading(true);
         const token = tokenStorage.get();
-        const response = await fetch('http://localhost:5000/api/peserta/my-registrations', {
+        const response = await fetch(getApiUrl('/peserta/my-registrations'), {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

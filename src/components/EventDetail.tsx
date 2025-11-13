@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Event } from '../types';
+import { getApiUrl, tokenStorage } from '../services/api';
 
 interface EventDetailProps {
   eventId: number;
@@ -31,7 +32,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
     const fetchEventDetail = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5000/api/events/${eventId}`);
+        const response = await fetch(getApiUrl(`/events/${eventId}`));
         if (!response.ok) throw new Error('Gagal memuat detail event');
         const data = await response.json();
         setEventDetail(data);
@@ -60,7 +61,7 @@ const EventDetail: React.FC<EventDetailProps> = ({ eventId, onClose, isLoggedIn 
     setRegistering(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/events/${eventId}/register`, {
+      const response = await fetch(getApiUrl(`/events/${eventId}/register`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

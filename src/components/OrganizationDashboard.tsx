@@ -40,7 +40,7 @@ const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({ isOpen, o
       try {
         setLoading(true);
         const token = tokenStorage.get();
-        const response = await fetch('http://localhost:5000/api/organisasi/my-events', {
+        const response = await fetch(getApiUrl('/organisasi/my-events'), {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -64,7 +64,7 @@ const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({ isOpen, o
     try {
       setLoadingAttendees(true);
       const token = tokenStorage.get();
-      const response = await fetch(`http://localhost:5000/api/organisasi/my-events/${eventId}/attendees`, {
+      const response = await fetch(getApiUrl(`/organisasi/my-events/${eventId}/attendees`), {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -86,7 +86,7 @@ const OrganizationDashboard: React.FC<OrganizationDashboardProps> = ({ isOpen, o
 
     try {
       const token = tokenStorage.get();
-      const response = await fetch(`http://localhost:5000/api/organisasi/confirm-payment/${registrasiId}`, {
+      const response = await fetch(getApiUrl(`/organisasi/confirm-payment/${registrasiId}`), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
