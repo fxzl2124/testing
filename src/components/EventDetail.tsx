@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Event } from '../types';
-import { getApiUrl, tokenStorage } from '../services/api';
+import { getApiUrl } from '../services/api';
 
 interface EventDetailProps {
   eventId: number;
