@@ -1,6 +1,6 @@
 // Main API handler for Vercel serverless deployment
 // This file acts as a single entry point that routes to all endpoints
-require('dotenv').config();
+// NOTE: dotenv not needed in Vercel - environment variables are injected automatically
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -18,10 +18,10 @@ const app = express();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-// Validasi JWT_SECRET
+// Validasi JWT_SECRET (log only, don't exit in serverless)
 if (!JWT_SECRET || JWT_SECRET.length < 32) {
-  console.error('❌ FATAL ERROR: JWT_SECRET tidak ditemukan atau terlalu pendek di .env');
-  process.exit(1);
+  console.error('❌ ERROR: JWT_SECRET tidak ditemukan atau terlalu pendek');
+  console.error('⚠️  Set JWT_SECRET di Vercel Environment Variables');
 }
 
 // --- MIDTRANS CONFIG ---
@@ -818,5 +818,6 @@ app.get('/api/payment/status/:orderId', authenticateToken, async (req, res) => {
   }
 });
 
-// Export for Vercel serverless
+// Export handler for Vercel serverless
 module.exports = app;
+module.exports.default = app;
